@@ -160,9 +160,9 @@ int main(){
     mpz_set_str(e, "65537", 10); // Exposant public
     mpz_set_str(n, "3233", 10); // Module public
 
-	    mpz_set_str(de, "2753", 10);   // Exposant privé
-		mpz_set_str(p, "61", 10);      // Premier facteur
-    	mpz_set_str(q, "53", 10);      // Second facteur
+	mpz_set_str(de, "2753", 10);   // Exposant privé
+	mpz_set_str(p, "61", 10);      // Premier facteur
+    mpz_set_str(q, "53", 10);      // Second facteur
 
     // Appel de la fonction encrypt
     encrypt(ch, m, e, n);
