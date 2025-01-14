@@ -1,6 +1,7 @@
 rsa_project/
 ├── src/                    # Contient les fichiers source (.c)
 │   ├── main.c              # Point d'entrée du programme
+│   ├── test.c              # tester les fonctionnalités
 │   ├── rsa.c               # Implémentation des fonctions liées à RSA
 │   ├── math_utils.c        # Fonctions utilitaires mathématiques (ex: GCD, modular exponentiation)
 │   └── prime_utils.c       # Fonctions de génération et de vérification des nombres premiers
@@ -8,10 +9,6 @@ rsa_project/
 │   ├── rsa.h               # Déclarations des fonctions RSA
 │   ├── math_utils.h        # Déclarations des fonctions utilitaires mathématiques
 │   └── prime_utils.h       # Déclarations des fonctions liées aux nombres premiers
-├── tests/                  # Tests unitaires ou d'intégration
-│   ├── test_rsa.c          # Tests des fonctions RSA
-│   ├── test_math_utils.c   # Tests des fonctions mathématiques
-│   └── test_prime_utils.c  # Tests des fonctions de gestion des nombres premiers
 ├── Makefile                # Script de compilation
 └── README.md               # Documentation du projet
 
