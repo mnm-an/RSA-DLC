@@ -2,7 +2,7 @@
 #include <gmp.h>
 #include <stdlib.h>
 #include <time.h>
-#include "../include/math_utils.h"
+#include "math_utils.h"
 
 int is_prime_base(mpz_t n,mpz_t a){
 	int s=0;
@@ -62,13 +62,14 @@ int is_prime(mpz_t n,int t){
 	return 1;
 }
 
-void get_prime(mpz_t prime, int k) {
+void get_prime(mpz_t prime, int k) {                   
     mpz_t inf;
     mpz_init(inf);
 
     gmp_randstate_t grain;
     gmp_randinit_default(grain);
-    gmp_randseed_ui(grain, time(NULL));
+    unsigned long seed = time(NULL) + rand();
+    gmp_randseed_ui(grain, seed);
 
     rsa_ui_pow_ui(inf, 2, k - 1); // Calcul 2^(k-1)
 
