@@ -22,8 +22,15 @@ void rsa_powm(mpz_t rop, mpz_t base, mpz_t exp, mpz_t modulo);
 void rsa_powm_ui(mpz_t rop, mpz_t base, unsigned long int exp, mpz_t modulo);
 
 void gcd(mpz_t result, const mpz_t a, const mpz_t b);
+
+// Calcul la relation de bezout : Donnant a et b il retourne u,v tel que a*u + b*v = pgcd
 void extended_euclide(mpz_t gcd, mpz_t x, mpz_t y, const mpz_t a, const mpz_t b);
-void modular_inverse(mpz_t result, const mpz_t a, const mpz_t m);
+
+// Calcul de l'inverse modulaire
+void modular_inverse(mpz_t result, const mpz_t a, const mpz_t phi);
+
+// Calcul de l'indicatrice d'euler
 void calculate_phi(mpz_t phi, const mpz_t p, const mpz_t q);
+
 
 #endif
