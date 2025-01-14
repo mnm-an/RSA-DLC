@@ -18,4 +18,3 @@ int is_prime(mpz_t n, int t);
 void get_prime(mpz_t prime, int bits);
 
 #endif
-
