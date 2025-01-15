@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <gmp.h>
 #include <time.h>
-#include "prime_utils.h"
+#include "../include/math_utils.h"
 
 // modulo normal
 void rsa_mod(mpz_t r, mpz_t d, mpz_t n){
@@ -129,52 +129,83 @@ void decrypt_crt(mpz_t m, mpz_t c, mpz_t d, mpz_t p, mpz_t q) {
     mpz_clears(dp, dq, qinv, m1, m2, h, temp1, temp2, NULL);
 }
 
+void rsa_sign(mpz_t signature,  mpz_t message, mpz_t d, mpz_t n) {
+// Calcul de la signature : signature = message^d mod n
+rsa_powm(signature, message, d, n);}
 
-int main(){
-	// Pour tester les fonctions
-	mpz_t a,b,c,d;
-	mpz_inits(a,b,c,d,NULL);
-	mpz_set_str(a,"51",10);
-	mpz_set_str(b,"5",10);
-	mpz_set_str(c,"181",10);
-	
-	rsa_mod(d,c,a);
-	gmp_printf("Operation Modulo : \n 181 % 51 = %Zd",d);
+int verify(mpz_t signature, mpz_t message, mpz_t e, mpz_t n) {
+    mpz_t recovered_message;
+    mpz_init(recovered_message);
 
-	rsa_mod_ui(d,c,76);
-	gmp_printf("\n Operation Modulo ui : \n 181 % 76 = %Zd",d);
+    // Calculer le message récupéré à partir de la signature : recovered_message = signature^e mod n
+    rsa_powm(recovered_message, signature, e, n);
 
-	rsa_powm(d,a,b,c);
-	gmp_printf("\n Operation exponentiation Modulo : \n pow(51,5,181) = %Zd",d);
+    // Comparer le message récupéré avec le message original
+    int is_valid = (mpz_cmp(recovered_message, message) == 0);
 
-	rsa_powm_ui(d,a,5,c);
-	gmp_printf("\n Operation exponentiation Modulo ui : \n pow(51,5,181) = %Zd\n",d);
+    mpz_clear(recovered_message);
+    return is_valid;
+}
 
-	mpz_clears(a,b,c,d,NULL);
+int main() {
+    // Test des fonctions de base
+    mpz_t a, b, c, d;
+    mpz_inits(a, b, c, d, NULL);
+    mpz_set_str(a, "51", 10);
+    mpz_set_str(b, "5", 10);
+    mpz_set_str(c, "181", 10);
 
-	mpz_t m, e, n, de, ch, p, q;
-    mpz_inits(m, e, n, de, ch, p, q, NULL);
+    rsa_mod(d, c, a);
+    gmp_printf("Operation Modulo : \n 181 %% 51 = %Zd", d);
 
-    // Exemple de données pour le test
-    mpz_set_str(m, "42", 10); // Message clair
+    rsa_mod_ui(d, c, 76);
+    gmp_printf("\nOperation Modulo ui : \n 181 %% 76 = %Zd", d);
+
+    rsa_powm(d, a, b, c);
+    gmp_printf("\nOperation exponentiation Modulo : \n pow(51, 5, 181) = %Zd", d);
+
+    rsa_powm_ui(d, a, 5, c);
+    gmp_printf("\nOperation exponentiation Modulo ui : \n pow(51, 5, 181) = %Zd\n", d);
+
+    mpz_clears(a, b, c, d, NULL);
+
+    // Test des fonctions RSA
+    mpz_t m, e, n, de, ch, p, q, signature;
+    mpz_inits(m, e, n, de, ch, p, q, signature, NULL);
+
+    // Données d'exemple
+    mpz_set_str(m, "42", 10);  // Message clair
     mpz_set_str(e, "65537", 10); // Exposant public
-    mpz_set_str(n, "3233", 10); // Module public
+    mpz_set_str(n, "3233", 10);  // Module public
+    mpz_set_str(de, "2753", 10); // Exposant privé
+    mpz_set_str(p, "61", 10);    // Premier facteur
+    mpz_set_str(q, "53", 10);    // Second facteur
 
-	    mpz_set_str(de, "2753", 10);   // Exposant privé
-		mpz_set_str(p, "61", 10);      // Premier facteur
-    	mpz_set_str(q, "53", 10);      // Second facteur
-
-    // Appel de la fonction encrypt
+    // Chiffrement
     encrypt(ch, m, e, n);
     gmp_printf("Message chiffré : %Zd\n", ch);
 
-	// Appel de la fonction decrypt_standard
+    // Déchiffrement standard
     decrypt_standard(m, ch, de, n);
     gmp_printf("Message déchiffré en mode standard: %Zd\n", m);
 
-	decrypt_crt(m, ch, de, p, q);
+    // Déchiffrement CRT
+    decrypt_crt(m, ch, de, p, q);
     gmp_printf("Message déchiffré en mode CRT: %Zd\n", m);
 
-    mpz_clears(m, e, n, ch, NULL);
+    // Signature
+    rsa_sign(signature, m, de, n);
+    gmp_printf("Signature générée : %Zd\n", signature);
 
+    // Vérification de la signature
+    int is_valid = verify(signature, m, e, n);
+    if (is_valid) {
+        printf("La signature est valide.\n");
+    } else {
+        printf("La signature est invalide.\n");
+    }
+
+    mpz_clears(m, e, n, de, ch, p, q, signature, NULL);
+
+    return 0;
 }

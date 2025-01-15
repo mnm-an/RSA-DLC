@@ -2,7 +2,7 @@
 #include <gmp.h>
 #include <stdlib.h>
 #include <time.h>
-#include "math_utils.h"
+#include "../include/math_utils.h"
 
 int is_prime_base(mpz_t n,mpz_t a){
 	int s=0;
