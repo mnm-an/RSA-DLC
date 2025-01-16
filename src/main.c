@@ -1,30 +1,31 @@
-// #include <stdio.h>
-// #include <gmp.h>
-// #include <stdlib.h>
-// #include <time.h>
-// #include <../include/prime_utils.h>
-// #include <math_utils.h>
-// #include <gmp.h>
-
+#include <stdio.h>
+#include <stdlib.h>
+#include <gmp.h>
+#include <rsa.h>
+#include <math_utils.h>
+#include <prime_utils.h>
 
 int main() {
-// 	mpz_t p,q,n,phi,a,inv;
-// 	mpz_inits(p,q,n,phi,a,inv,NULL);
+	/**
+ 	mpz_t p,q,n,phi,x,inv;
+ 	mpz_inits(p,q,n,phi,x,inv,NULL);
 
-// 	get_prime(p,256);
-// 	get_prime(q,256);
+ 	get_prime(p,256);
+ 	get_prime(q,256);
 
-// 	mpz_mul(n,p,q);
+ 	mpz_mul(n,p,q);
 
-// 	calculate_phi(phi,p,q);
+ 	calculate_phi(phi,p,q);
 
-// 	mpz_set_ui(a,16549);
+ 	mpz_set_ui(x,16549);
 
-// 	modular_inverse(inv,a,phi);
+ 	modular_inverse(inv,x,phi);
 
-// 	gmp_printf("\n[+] Test : Géneration des premier \n\np = %Zd\nq = %Zd\nn = %Zd",p,q,n);
-// 	gmp_printf("\n\n[+] Test de L'inverse modulaire \n\ninverse of %Zd mod n = %Zd",a,inv);
-// 	mpz_clears(p,q,n,phi,a,inv,NULL);
+ 	gmp_printf("\n[+] Test : Géneration des premier \n\np = %Zd\nq = %Zd\nn = %Zd",p,q,n);
+	gmp_printf("\n\n[+] Test de L'inverse modulaire \n\ninverse of %Zd mod n = %Zd",x,inv);
+
+	mpz_clears(p,q,n,phi,x,inv,NULL);
+	**/
     // Test des fonctions de base
     mpz_t a, b, c, d;
     mpz_inits(a, b, c, d, NULL);
@@ -63,7 +64,7 @@ int main() {
     gmp_printf("Message chiffré : %Zd\n", ch);
 
     // Déchiffrement standard
-    decrypt_standard(m, ch, de, n);
+    decrypt(m, ch, de, n);
     gmp_printf("Message déchiffré en mode standard: %Zd\n", m);
 
     // Déchiffrement CRT
@@ -71,7 +72,7 @@ int main() {
     gmp_printf("Message déchiffré en mode CRT: %Zd\n", m);
 
     // Signature
-    rsa_sign(signature, m, de, n);
+    sign(signature, m, de, n);
     gmp_printf("Signature générée : %Zd\n", signature);
 
     // Vérification de la signature
