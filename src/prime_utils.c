@@ -2,7 +2,7 @@
 #include <gmp.h>
 #include <stdlib.h>
 #include <time.h>
-#include "../include/math_utils.h"
+#include "math_utils.h"
 
 int is_prime_base(mpz_t n,mpz_t a){
 	int s=0;
@@ -80,27 +80,4 @@ void get_prime(mpz_t prime, int k) {
 
     gmp_randclear(grain);
     mpz_clear(inf);
-}
-
-void rsa_gcd(mpz_t result, const mpz_t a, const mpz_t b) {
-    mpz_t x, y, temp;
-
-    // Initialize variables
-    mpz_init_set(x, a); // Copy a into x
-    mpz_init_set(y, b); // Copy b into y
-    mpz_init(temp);     // Temporary variable for swapping
-
-    // Euclidean algorithm
-     while (mpz_cmp_ui(y, 0) != 0) { // Compare y with 0
-        rsa_mod(temp, x, y);       // temp = x % y
-        mpz_set(x, y);             // x = y
-        mpz_set(y, temp);          // y = temp
-    }
-
-    mpz_set(result, x); // The result is stored in x
-
-    // Clear temporary variables
-    mpz_clear(x);
-    mpz_clear(y);
-    mpz_clear(temp);
 }
