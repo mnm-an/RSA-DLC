@@ -4,7 +4,7 @@ CFLAGS = -Wall -Wextra -Iinclude -g
 LDFLAGS = -lgmp
 
 # Source files
-SRC = src/main.c src/prime_utils.c src/math_utils.c
+SRC = src/main.c src/rsa.c src/prime_utils.c src/math_utils.c
 
 # Output binary
 EXEC = tst
