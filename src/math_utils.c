@@ -86,3 +86,57 @@ void rsa_powm_ui(mpz_t rop, mpz_t base, unsigned long int exp,mpz_t modulo){
 	mpz_clears(a,mpz_exp,NULL);
 
 } 
+
+void modular_inverse(mpz_t result, mpz_t a, mpz_t n) {
+    mpz_t r, r_prev, t, t_prev, q, temp, temp2;
+    mpz_inits(r, r_prev, t, t_prev, q, temp, temp2, NULL);
+
+    mpz_set(r, n);        // r = n
+    mpz_set(r_prev, a);   // r_prev = a
+    mpz_set_ui(t, 0);     // t = 0
+    mpz_set_ui(t_prev, 1); // t_prev = 1
+
+    while (mpz_cmp_ui(r, 0) != 0) {
+        // Calcul de q = r_prev / r
+        mpz_div(q, r_prev, r);
+
+        // Mise à jour r
+        mpz_mul(temp, q, r);
+        mpz_sub(temp2, r_prev, temp);
+        mpz_set(r_prev, r);
+        mpz_set(r, temp2);
+
+        // Mise à jour t
+        mpz_mul(temp, q, t);
+        mpz_sub(temp2, t_prev, temp);
+        mpz_set(t_prev, t);
+        mpz_set(t, temp2);
+    }
+
+    // Si r_prev != 1, l'inverse modulaire n'existe pas
+    if (mpz_cmp_ui(r_prev, 1) != 0) {
+        mpz_set_ui(result, 0); // Pas d'inverse modulaire
+    } else {
+        // Si t_prev est négatif, on l'ajuste
+        if (mpz_sgn(t_prev) < 0) {
+            mpz_add(t_prev, t_prev, n);
+        }
+        mpz_set(result, t_prev);
+    }
+
+    mpz_clears(r, r_prev, t, t_prev, q, temp, temp2, NULL);
+}
+
+void calculate_phi(mpz_t phi, mpz_t p, mpz_t q) {
+    mpz_t p_minus_1, q_minus_1;
+    mpz_inits(p_minus_1, q_minus_1, NULL);
+
+    // Calculer p-1 et q-1
+    mpz_sub_ui(p_minus_1, p, 1); // p_minus_1 = p - 1
+    mpz_sub_ui(q_minus_1, q, 1); // q_minus_1 = q - 1
+
+    // Calculer phi = (p-1) * (q-1)
+    mpz_mul(phi, p_minus_1, q_minus_1);
+
+    mpz_clears(p_minus_1, q_minus_1, NULL);
+}
