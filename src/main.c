@@ -8,25 +8,7 @@
 
 int main() {
 	/**
- 	mpz_t p,q,n,phi,x,inv;
- 	mpz_inits(p,q,n,phi,x,inv,NULL);
 
- 	get_prime(p,256);
- 	get_prime(q,256);
-
- 	mpz_mul(n,p,q);
-
- 	calculate_phi(phi,p,q);
-
- 	mpz_set_ui(x,16549);
-
- 	modular_inverse(inv,x,phi);
-
- 	gmp_printf("\n[+] Test : Géneration des premier \n\np = %Zd\nq = %Zd\nn = %Zd",p,q,n);
-	gmp_printf("\n\n[+] Test de L'inverse modulaire \n\ninverse of %Zd mod n = %Zd",x,inv);
-
-	mpz_clears(p,q,n,phi,x,inv,NULL);
-	**/
     printf("\n[+] ---------------- Test des fonctions de base ---------------------[+]\n");
     mpz_t a, b, c, d;
     mpz_inits(a, b, c, d, NULL);
@@ -114,16 +96,17 @@ int main() {
 
  	gmp_printf("\nTest : Géneration des premier \n\np = %Zd (256 bits)\nq = %Zd (256 bits)\nn = %Zd (512 bits)",priv_p,priv_q,pub_n);
 	gmp_printf("\n\n[+] Test de L'inverse modulaire \n\ninverse of %Zd mod n = %Zd",pub_e,inv);
+	**/
+ 	mpz_t priv_p,priv_q,pub_n,phi,pub_e,inv;
+ 	mpz_inits(priv_p,priv_q,pub_n,phi,pub_e,inv,NULL);
 
 	int time_f = time(NULL);
 
 	get_prime(priv_p,1024);
-	get_prime(priv_q,1024);
+
 	int time_l = time(NULL);
 
  	gmp_printf("\n\n[+] Géneration de premier de 1024 bits : \n\np = %Zd (1024 bits)",priv_p);
-
- 	gmp_printf("\nq = %Zd (1024 bits)",priv_q);
 
   	printf("\ntime : %d sec",time_l-time_f);
 
