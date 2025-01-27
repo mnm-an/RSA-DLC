@@ -62,22 +62,35 @@ int is_prime(mpz_t n,int t){
 	return 1;
 }
 
-void get_prime(mpz_t prime, int k) {                   
-    mpz_t inf;
+void get_prime(mpz_t prime, int k){                   
+    mpz_t inf; // Variable pour stocker 2^(k-1)
     mpz_init(inf);
 
-    gmp_randstate_t grain;
-    gmp_randinit_default(grain);
-    unsigned long seed = time(NULL) + rand();
-    gmp_randseed_ui(grain, seed);
+    gmp_randstate_t grain; // État aléatoire GMP
+    gmp_randinit_default(grain); // Initialisation de l'état aléatoire
+    unsigned long seed = time(NULL) + rand(); // Génération d'une graine unique basée sur le temps avec un rand
+    gmp_randseed_ui(grain, seed); // Initialisation de l'état aléatoire avec la graine
 
-    rsa_ui_pow_ui(inf, 2, k - 1); // Calcul 2^(k-1)
+    // Calcul de 2^(k-1) pour garantir que les nombres générés sont de k bits
+    rsa_ui_pow_ui(inf, 2, k - 1);
 
-    do {
-        mpz_urandomb(prime, grain, k - 1); // Générer un nombre aléatoire < 2^(k-1)
-        mpz_add(prime, prime, inf);       // Ajouter 2^(k-1) pour obtenir un nombre de k bits
-    } while (!is_prime(prime, 25)); // Vérifier si le nombre est probablement premier
+    // Boucle pour générer un nombre premier
+    while (1) {
+        // Génération d'un nombre aléatoire < 2^(k-1)
+        mpz_urandomb(prime, grain, k - 1);
 
+        // Ajout de 2^(k-1) pour garantir que le nombre est de k bits
+        mpz_add(prime, prime, inf);
+
+        // Vérification de la primalité
+        if (is_prime(prime, 15)) {
+            break; // Si le nombre est premier, on sort de la boucle
+        }
+
+        // Réinitialisation de la variable `prime` pour libérer la mémoire
+        mpz_set_ui(prime, 0);
+    }
     gmp_randclear(grain);
     mpz_clear(inf);
 }
+
