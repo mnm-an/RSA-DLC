@@ -7,110 +7,53 @@
 #include <time.h>
 
 int main() {
-	/**
+    printf("\n[+] --------------- TEST DU PROJET RSA ---------------- [+]\n");
+    /*** Test des fonctions RSA ***/
+    printf("\n[+] --------------- Test du chiffrement et déchiffrement ---------------- [+]\n");
 
-    printf("\n[+] ---------------- Test des fonctions de base ---------------------[+]\n");
-    mpz_t a, b, c, d;
-    mpz_inits(a, b, c, d, NULL);
-    mpz_set_str(a, "51", 10);
-    mpz_set_str(b, "5", 10);
-    mpz_set_str(c, "181", 10);
+    mpz_t m, e, n,phi, d_priv, ch, p, q, signature;
+    mpz_inits(m, e, n,phi, d_priv, ch, p, q, signature, NULL);
 
-    rsa_mod(d, c, a);
-    printf("\n[-]--------------------------------------------------[-]\n");
-    printf("Test de quelques Foncionnalités :\n");
-    gmp_printf("\nOperation Modulo : \n 181 %% 51 = %Zd", d);
+    // Génération des clés
+    get_prime(p, 1024);  // p de 1024 bits
+    get_prime(q, 1024);  // q de 1024 bits
+    mpz_mul(n, p, q);    // n = p * q
+    calculate_phi(phi, p, q); // phi(n) = (p-1) * (q-1)
+    mpz_set_ui(e, 65537); // Exposant public
+    modular_inverse(d_priv, e, phi); // Calcul de d = e^(-1) mod phi(n)
 
-    rsa_mod_ui(d, c, 76);
-    gmp_printf("\nOperation Modulo ui : \n 181 %% 76 = %Zd", d);
+    // Affichage des clés
+    printf("\n[+] Clés générées :\n");
+    gmp_printf(" - p = %Zd\n - q = %Zd\n - n = %Zd\n - e = %Zd\n - d = %Zd\n", p, q, n, e, d_priv);
 
-    rsa_powm(d, a, b, c);
-    gmp_printf("\nOperation exponentiation Modulo : \n pow(51, 5, 181) = %Zd", d);
-
-    rsa_powm_ui(d, a, 5, c);
-    gmp_printf("\nOperation exponentiation Modulo ui : \n pow(51, 5, 181) = %Zd\n", d);
-
-    mpz_clears(a, b, c, d, NULL);
-
-    // Test des fonctions RSA
-    mpz_t m, e, n, de, ch, p, q, signature;
-    mpz_inits(m, e, n, de, ch, p, q, signature, NULL);
-
-    // Données d'exemple
-    mpz_set_str(m, "42", 10);    // Message clair
-    mpz_set_str(e, "65537", 10); // Exposant public
-    mpz_set_str(n, "3233", 10);  // Module public
-    mpz_set_str(de, "2753", 10); // Exposant privé
-    mpz_set_str(p, "61", 10);    // Premier facteur
-    mpz_set_str(q, "53", 10);    // Second facteur
-
-    // Chiffrement
+    // Chiffrement d'un message
+    mpz_set_str(m, "42", 10); // Message clair
     encrypt(ch, m, e, n);
-    printf("\n[-]--------------------------------------------------[-]\n");
-    printf("Test de chiffrement et déchiffrement :\n");
     gmp_printf("\nMessage chiffré : %Zd\n", ch);
 
     // Déchiffrement standard
-    decrypt(m, ch, de, n);
-    gmp_printf("\nMessage déchiffré en mode standard: %Zd\n", m);
+    decrypt(m, ch, d_priv, n);
+    gmp_printf("\nMessage déchiffré (standard) : %Zd\n", m);
 
-    // Déchiffrement CRT
-    decrypt_crt(m, ch, de, p, q);
-    gmp_printf("\nMessage déchiffré en mode CRT: %Zd\n", m);
+    // Déchiffrement avec CRT
+    decrypt_crt(m, ch, d_priv, p, q);
+    gmp_printf("\nMessage déchiffré (CRT) : %Zd\n", m);
 
-    printf("\n[-]--------------------------------------------------[-]\n");
-    printf("Test de signature :\n");
+    /*** Test de signature et vérification ***/
+    printf("\n[+] --------------- Test de signature et vérification ---------------- [+]\n");
 
-    // Signature
-    sign(signature, m, de, n);
+    // Signature du message
+    sign(signature, m, d_priv, n);
     gmp_printf("\nSignature générée : %Zd\n", signature);
 
     // Vérification de la signature
-    int is_valid = verify(signature, m, e, n);
-    if (is_valid)
-    {
-        printf("\nLa signature est valide.\n");
-    }
-    else
-    {
-        printf("La signature est invalide.\n");
-    }
+    int valid = verify(signature, m, e, n);
+    printf("\nRésultat de la vérification : %s\n", valid ? "VALIDÉE ✅" : "INVALIDE ❌");
 
-    mpz_clears(m, e, n, de, ch, p, q, signature, NULL);
+    // Libération de la mémoire
+    mpz_clears(m, e, n, phi,d_priv, ch, p, q, signature, NULL);
 
-    printf("\n[+] ---------------- Test des géneration des clés ---------------------[+]\n");
-
- 	mpz_t priv_p,priv_q,pub_n,phi,pub_e,inv;
- 	mpz_inits(priv_p,priv_q,pub_n,phi,pub_e,inv,NULL);
-
- 	get_prime(priv_p,256);
- 	get_prime(priv_q,256);
-
- 	mpz_mul(pub_n,priv_p,priv_q);
-
- 	calculate_phi(phi,priv_q,priv_p);
-
- 	mpz_set_ui(pub_e,65537);
-
- 	modular_inverse(inv,pub_e,phi);
-
- 	gmp_printf("\nTest : Géneration des premier \n\np = %Zd (256 bits)\nq = %Zd (256 bits)\nn = %Zd (512 bits)",priv_p,priv_q,pub_n);
-	gmp_printf("\n\n[+] Test de L'inverse modulaire \n\ninverse of %Zd mod n = %Zd",pub_e,inv);
-	**/
- 	mpz_t priv_p,priv_q,pub_n,phi,pub_e,inv;
- 	mpz_inits(priv_p,priv_q,pub_n,phi,pub_e,inv,NULL);
-
-	int time_f = time(NULL);
-
-	get_prime(priv_p,1024);
-
-	int time_l = time(NULL);
-
- 	gmp_printf("\n\n[+] Géneration de premier de 1024 bits : \n\np = %Zd (1024 bits)",priv_p);
-
-  	printf("\ntime : %d sec",time_l-time_f);
-
-	mpz_clears(priv_p,priv_q,pub_n,phi,pub_e,inv,NULL);
+    printf("\n[+] ---------------- FIN DES TESTS ---------------- [+]\n");
 
     return 0;
 }
