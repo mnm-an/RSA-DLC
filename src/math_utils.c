@@ -53,22 +53,26 @@ void rsa_ui_pow_ui(mpz_t rop, unsigned long int base, unsigned long int exp) {
     mpz_clear(mpz_base);            
 }
 
-// Exponentiation modulaire
+// Exponentiation modulaire square and multiply always
 void rsa_powm(mpz_t rop, mpz_t base, mpz_t exp,mpz_t modulo){
 
 	mpz_t a;
-	mpz_init(a);
+	mpz_inits(a,b,NULL);
 
 	int l = (int)mpz_sizeinbase(exp,2); // Calculer le nombre des bits de la base 
 	mpz_set_str(a,"1",10); // Initialiser a à 1
+	mpz_set_str(b,"1",10); // Initialiser b à 1
 
 	for(int i=l-1;i>=0;i--){
 		mpz_mul(a,a,a);
-		rsa_mod(a,a,modulo);
+		rsa_mod(a,a,modulo); // a^2 mod n
 
 		if(mpz_tstbit(exp,i)){
 			mpz_mul(a,a,base);
-			rsa_mod(a,a,modulo);
+			rsa_mod(a,a,modulo); // a*m mod n
+		}else{
+			mpz_mul(b,a,base);
+			rsa_mod(b,a,modulo); // b*m mod n   square and multiply always
 		}
 	}
 	mpz_set(rop,a);
@@ -87,11 +91,11 @@ void rsa_powm_ui(mpz_t rop, mpz_t base, unsigned long int exp,mpz_t modulo){
 
 } 
 
-void modular_inverse(mpz_t result, mpz_t a, mpz_t n) {
+void modular_inverse(mpz_t result, mpz_t a, mpz_t phi) {
     mpz_t r, r_prev, t, t_prev, q, temp, temp2;
     mpz_inits(r, r_prev, t, t_prev, q, temp, temp2, NULL);
 
-    mpz_set(r, n);        // r = n
+    mpz_set(r, phi);        // r = phi
     mpz_set(r_prev, a);   // r_prev = a
     mpz_set_ui(t, 0);     // t = 0
     mpz_set_ui(t_prev, 1); // t_prev = 1
@@ -119,7 +123,7 @@ void modular_inverse(mpz_t result, mpz_t a, mpz_t n) {
     } else {
         // Si t_prev est négatif, on l'ajuste
         if (mpz_sgn(t_prev) < 0) {
-            mpz_add(t_prev, t_prev, n);
+            mpz_add(t_prev, t_prev, phi);
         }
         mpz_set(result, t_prev);
     }
