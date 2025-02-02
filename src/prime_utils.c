@@ -20,25 +20,42 @@ int is_prime_base(mpz_t n,mpz_t a){
 	}
 
 	rsa_powm(res,a,r,n);
+
 	if(mpz_cmp_ui(res,1)==0){
 		mpz_clears(r, res, phi, NULL);
-		return 1;
+		return 1; // Probablement premier
 	}
+
 	for(int i=1;i<s;i++){
 		rsa_powm_ui(res,res,2,n);
 		if(mpz_cmp(res,phi)==0){
 			mpz_clears(r, res, phi, NULL);
-			return 1;
+			return 1; // Probablement premier
 		}
 	}
 
 	mpz_clears(r, res, phi, NULL);
-	return 0; // Probablement Premier
+	return 0; // Composé
+}
+
+// Liste de petits nombres premiers pour un test rapide
+const unsigned long SMALL_PRIMES[] = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199, 211, 223, 227, 229, 233, 239, 241, 251, 257, 263, 269, 271, 277, 281, 283};
+#define SMALL_PRIME_COUNT (sizeof(SMALL_PRIMES) / sizeof(SMALL_PRIMES[0]))
+
+// Vérifie si n est divisible par un petit premier
+int quick_prime_check(mpz_t n) {
+    for (size_t i = 1; i < SMALL_PRIME_COUNT; i++) {  // Commence à 1 pour éviter 2 (on génère toujours impair)
+        if (mpz_divisible_ui_p(n, SMALL_PRIMES[i])) {
+            return 0;  // Pas premier
+        }
+    }
+    return 1;
 }
 
 int is_prime(mpz_t n,int t){
 	mpz_t rand;
 	mpz_init(rand);
+	if (!quick_prime_check(n)) return 0;
 
 	gmp_randstate_t grain;
 	gmp_randinit_default(grain);
@@ -52,7 +69,7 @@ int is_prime(mpz_t n,int t){
 		if(is_prime_base(n,rand)==0){
 			mpz_clear(rand);
 			gmp_randclear(grain);
-			return 0;
+			return 0; // pas premier
 		}
 	}
 
@@ -62,9 +79,9 @@ int is_prime(mpz_t n,int t){
 	return 1;
 }
 
-void get_prime(mpz_t prime, int k){                   
-    mpz_t inf; // Variable pour stocker 2^(k-1)
-    mpz_init(inf);
+void get_prime(mpz_t prime, int k) {                   
+    mpz_t min_val; // Variable pour stocker 2^(k-1)
+    mpz_init(min_val);
 
     gmp_randstate_t grain; // État aléatoire GMP
     gmp_randinit_default(grain); // Initialisation de l'état aléatoire
@@ -72,7 +89,7 @@ void get_prime(mpz_t prime, int k){
     gmp_randseed_ui(grain, seed); // Initialisation de l'état aléatoire avec la graine
 
     // Calcul de 2^(k-1) pour garantir que les nombres générés sont de k bits
-    rsa_ui_pow_ui(inf, 2, k - 1);
+    rsa_ui_pow_ui(min_val, 2, k - 1);
 
     // Boucle pour générer un nombre premier
     while (1) {
@@ -80,7 +97,10 @@ void get_prime(mpz_t prime, int k){
         mpz_urandomb(prime, grain, k - 1);
 
         // Ajout de 2^(k-1) pour garantir que le nombre est de k bits
-        mpz_add(prime, prime, inf);
+        mpz_add(prime, prime, min_val);
+
+        // Forcer l'impairité (dernier bit à 1)
+        mpz_setbit(prime, 0);
 
         // Vérification de la primalité
         if (is_prime(prime, 15)) {
@@ -91,6 +111,5 @@ void get_prime(mpz_t prime, int k){
         mpz_set_ui(prime, 0);
     }
     gmp_randclear(grain);
-    mpz_clear(inf);
+    mpz_clear(min_val);
 }
-
