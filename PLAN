@@ -1,7 +1,8 @@
+Une implémentation complète de l'algorithme RSA en C à jeu d'instruction utilisant la bibliothèque GMP. Ce projet comprend la génération des clés, le chiffrement, le déchiffrement, la signature numérique et la vérification.
+
 rsa_project/
 ├── src/                    # Contient les fichiers source (.c)
-│   ├── main.c              # Point d'entrée du programme
-│   ├── test.c              # tester les fonctionnalités
+│   ├── main.c              # Point d'entrée du programme             # tester les fonctionnalités
 │   ├── rsa.c               # Implémentation des fonctions liées à RSA
 │   ├── math_utils.c        # Fonctions utilitaires mathématiques (ex: GCD, modular exponentiation)
 │   └── prime_utils.c       # Fonctions de génération et de vérification des nombres premiers
@@ -12,36 +13,31 @@ rsa_project/
 ├── Makefile                # Script de compilation
 └── README.md               # Documentation du projet
 
+📌 Fonctionnalités Implémentées
+🔹 1️⃣ Génération de clés RSA
 
+📌 Fonction : generate_keys()
+🔹 Génère une paire de clés RSA (publique et privée) avec des nombres premiers sécurisés.
+🔹 2️⃣ Chiffrement et Déchiffrement
 
-1 – Génération de clé :
+📌 Fonctions : encrypt() et decrypt()
+✔ Chiffrement RSA : Convertit un message clair en texte chiffré.
+✔ Déchiffrement RSA : Récupère le message clair à partir du texte chiffré.
+✔ Déchiffrement CRT : Optimisé avec le théorème des restes chinois (decrypt_crt()).
+🔹 3️⃣ Signature Numérique et Vérification
 
-    . generate_prime(mpz_t prime, unsigned int bits): Génère un nombre premier de la taille spécifiée.
+📌 Fonctions : sign() et verify()
+✔ Signature RSA : Génère une signature numérique pour garantir l'authenticité.
+✔ Vérification : Confirme si une signature est valide ou non.
+🔹 4️⃣ Optimisation : Génération de Nombres Premiers Sécurisée
 
-    . is_prime(mpz_t n): Test de primalité pour vérifier si un nombre est premier.
+📌 Fonction : get_prime()
+✔ Miller-Rabin .
+✔ Élimination des nombres divisibles par les petits nombres premiers avant Miller-Rabin pour accélérer la génération.
 
-    . gcd(mpz_t result, const mpz_t a, const mpz_t b): Calcule le PGCD de deux nombres.
+🔹 5️⃣ Optimisation : Exponentiation Modulaire Sécurisée
 
-    . generate_public_key(mpz_t e, const mpz_t phi): Génère l'exposant public e tel que 1<e<ϕ(n) et pgcd(e,ϕ(n)) == 1.
-
-    . modular_inverse(mpz_t d, const mpz_t e, const mpz_t phi): Calcule l'inverse modulaire d tel que e⋅d≡1 mod ϕ(n)
-
-2 – Chiffrement :
-
-    . encrypt(mpz_t cipher, const mpz_t message, const mpz_t e, const mpz_t n): Chiffre un message en utilisant la clé publique.
-
-3 – Déchiffrement/Signature en mode standard :
-
-    . decrypt(mpz_t message, const mpz_t cipher, const mpz_t d, const mpz_t n): Déchiffre un message en utilisant la clé privée.
-
-    . sign(mpz_t signature, const mpz_t message, const mpz_t d, const mpz_t n): Génère une signature pour un message.
-
-4 – Déchiffrement/Signature en mode CRT :
-
-    . decrypt_crt(mpz_t message, const mpz_t cipher, const mpz_t p, const mpz_t q, const mpz_t d_p, const mpz_t d_q, const mpz_t q_inv): Déchiffre un message en utilisant le CRT pour accélérer le calcul.
-
-    . generate_crt_components(mpz_t d_p, mpz_t d_q, mpz_t q_inv, const mpz_t d, const mpz_t p, const mpz_t q): Calcule les composants dp, dq, et qinv nécessaires pour le CRT.
-
-5 – Vérification de signature :
-
-    . verify(mpz_t result, const mpz_t signature, const mpz_t e, const mpz_t n): Vérifie la validité d'une signature en la comparant au message original.
+📌 Fonction : rsa_powm()
+✔ Utilisation de Square-and-Multiply Always pour résister aux attaques SPA (Simple Power Analysis).
+✔ Temps constant pour empêcher les attaques par observation temporelle.
+✔ Protège l’exposant d pendant l'exponentiation.
