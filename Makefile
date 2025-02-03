@@ -7,7 +7,7 @@ LDFLAGS = -lgmp
 SRC = src/main.c src/rsa.c src/prime_utils.c src/math_utils.c
 
 # Output binary
-EXEC = tst
+EXEC = exec
 
 # Build the program
 all: $(EXEC)
