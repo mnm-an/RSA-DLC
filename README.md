@@ -6,7 +6,20 @@ Ce projet est une implémentation complète de l'algorithme RSA en C, utilisant 
 
 Le projet **RSA** est organisé comme suit :
 
-rsa_project/ ├── 📂 src/ # Contient les fichiers source (.c) │ ├── 📄 main.c # Point d'entrée du programme (tester les fonctionnalités) │ ├── 📄 rsa.c # Implémentation des fonctions liées à RSA │ ├── 📄 math_utils.c # Fonctions utilitaires mathématiques (ex: GCD, modular exponentiation) │ └── 📄 prime_utils.c # Fonctions de génération et de vérification des nombres premiers ├── 📂 include/ # Contient les fichiers d'en-tête (.h) │ ├── 📄 rsa.h # Déclarations des fonctions RSA │ ├── 📄 math_utils.h # Déclarations des fonctions utilitaires mathématiques │ └── 📄 prime_utils.h # Déclarations des fonctions liées aux nombres premiers ├── 📜 Makefile # Script de compilation └── 📜 README.md # Documentation du projet
+_rsa_project/_  
+├── **src/** _(Contient les fichiers source (.c))_  
+│   ├── **main.c** _(Point d’entrée du programme)_  
+│   ├── **rsa.c** _(Implémentation des fonctions liées à RSA)_  
+│   ├── **test.c** _(Tests des fonctionnalités)_  
+│   ├── **math_utils.c** _(Fonctions mathématiques : GCD, exponentiation modulaire)_  
+│   ├── **prime_utils.c** _(Fonctions de génération et de vérification des nombres premiers)_  
+├── **include/** _(Headers pour abstraction matérielle)_  
+│   ├── **rsa.h** _(Déclarations des fonctions RSA)_  
+│   ├── **math_utils.h** _(Déclarations des fonctions utilitaires mathématiques)_  
+│   ├── **prime_utils.h** _(Déclarations des fonctions liées aux nombres premiers)_  
+├── **Makefile** _(Script de compilation)_  
+└── **README.md** _(Documentation et workflow
+
 
 
 ## Fonctionnalités Implémentées
