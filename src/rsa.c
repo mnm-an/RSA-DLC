@@ -3,6 +3,38 @@
 #include <gmp.h>
 #include <time.h>
 #include "math_utils.h"
+#include "prime_utils.h"
+
+void generate_keys(mpz_t n, mpz_t e, mpz_t d, mpz_t p, mpz_t q, int bits){
+    mpz_t phi;
+    mpz_init(phi);
+
+    // 1 - Génération de deux nombres premiers distincts
+    get_prime(p, bits);
+    do {
+        get_prime(q, bits);
+    } while (mpz_cmp(p, q) == 0);  // Vérifier que p ≠ q
+
+    // 2 - Calcul de n = p * q
+    mpz_mul(n, p, q);    // n = p * q
+
+    // 3 - Calcul de φ(n) = (p - 1) * (q - 1)
+    calculate_phi(phi, p, q);    
+
+    // 4 - Choisir e et vérifier qu'il est inversible mod φ(n)
+    mpz_set_ui(e, 65537);  // Premier choix : 4ème nombre de Fermat
+
+    while (1) {
+        modular_inverse(d, e, phi);
+        if (mpz_cmp_ui(d, 0) != 0) {
+            break;  // d a été trouvé, e est correct
+        }
+        mpz_add_ui(e, e, 2);  // Essayer un autre e impair
+    }
+
+
+    mpz_clear(phi);
+}
 
 void encrypt(mpz_t c, mpz_t m, mpz_t e, mpz_t n)
 {
@@ -29,7 +61,7 @@ void decrypt_crt(mpz_t m, mpz_t c, mpz_t d, mpz_t p, mpz_t q)
     rsa_mod(dq, d, temp1);
 
     // Calcul de qinv (inverse de q mod p)
-    mpz_invert(qinv, q, p);
+    modular_inverse(qinv, q, p);
 
     // Calcul de m1 = c^dp mod p et m2 = c^dq mod q
     rsa_powm(m1, c, dp, p);
@@ -79,4 +111,40 @@ int verify(mpz_t signature, mpz_t message, mpz_t e, mpz_t n) {
     mpz_clear(difference);
 
     return is_valid;
+}
+
+void str_to_mpz(mpz_t m, char *msg) {
+    mpz_set_str(m, "0", 10);  // Initialiser m=0
+
+    while (*msg != '\0') {  // parcourir le msg
+        mpz_mul_ui(m, m, 256);  // Shift left 8 bits 
+        mpz_add_ui(m, m, (unsigned char)*msg);  // ajouter la valeur Ascci au m
+        msg++; 
+    }
+}
+
+void mpz_to_str(mpz_t m, char* msg) {
+    int i = 0;
+    unsigned char byte;
+    
+    // Décoder le nombre
+    while (mpz_cmp_ui(m, 0) > 0) {
+        byte = mpz_get_ui(m) % 256;  // Extraire le dernier octet (caractère)
+        msg[i++] = (char)byte;  // Stocker cet octet comme caractère
+        mpz_div_ui(m, m, 256);  // Right Shift (diviser par 2^8)
+    }
+    
+    msg[i] = '\0';  // End of string
+    
+    // Inverser la chaîne pour restaurer l'ordre correct des caractères
+    int start = 0;
+    int end = i - 1;
+    while (start < end) {
+        char temp = msg[start];
+        msg[start] = msg[end];
+        msg[end] = temp;
+
+        start++;
+        end--;
+    }
 }
