@@ -47,12 +47,11 @@ _rsa_project/_
 ### 4️⃣ Optimisation : Génération de Nombres Premiers Sécurisée
 
 - **Fonction : `get_prime()`**
-  - **Miller-Rabin** : Test de primalité probabiliste.
-  - **Élimination des nombres divisibles par les petits nombres premiers** avant Miller-Rabin pour accélérer la génération.
+  - **Miller-Rabin** : Test de primalité probabiliste avec paramètre de sécurité t.
+  - **Élimination des nombres divisibles par des petits nombres premiers** avant test Miller-Rabin pour accélérer la génération.
 
 ### 5️⃣ Optimisation : Exponentiation Modulaire Sécurisée
 
 - **Fonction : `rsa_powm()`**
   - **Square-and-Multiply Always** : Résiste aux attaques SPA (Simple Power Analysis).
-  - **Temps constant** : Empêche les attaques par observation temporelle.
   - **Protège l’exposant `d`** pendant l'exponentiation.
