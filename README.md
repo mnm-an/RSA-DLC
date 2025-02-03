@@ -12,15 +12,15 @@ Le projet **RSA** est organisé comme suit :
 _rsa_project/_  
 ├── **src/** _(Contient les fichiers source (.c))_  
 │   ├── **main.c** _(Point d’entrée du programme)_  
-│   ├── **rsa.c** _(Implémentation des fonctions liées à RSA)_  
-│   ├── **math_utils.c** _(Fonctions mathématiques : GCD, exponentiation modulaire)_  
+│   ├── **rsa.c** _(Implémentation des fonctions liées à RSA : génération des clés ,chiffrement , déchiffrement standard et CRT , signature , vérification)_  
+│   ├── **math_utils.c** _(Fonctions mathématiques : opération arithmétiques, exponentiation modulaire, inverse modulaire ,algorithme d'euclide étendue)_  
 │   ├── **prime_utils.c** _(Fonctions de génération et de vérification des nombres premiers)_  
 ├── **include/** _(Headers pour abstraction matérielle)_  
 │   ├── **rsa.h** _(Déclarations des fonctions RSA)_  
 │   ├── **math_utils.h** _(Déclarations des fonctions utilitaires mathématiques)_  
-│   ├── **prime_utils.h** _(Déclarations des fonctions liées aux nombres premiers)_  
+│   ├── **prime_utils.h** _(Déclarations des fonctions de géneration des nombres premiers)_  
 ├── **Makefile** _(Script de compilation)_  
-└── **README.md** _(Documentation et workflow
+└── **README.md** _(Documentation et workflow)_
 
 
 
