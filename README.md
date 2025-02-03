@@ -1,6 +1,9 @@
-# Implémentation Complète de l'Algorithme RSA en C avec la Bibliothèque GMP
+# RSA à jeu réduit d’instruction
 
-Ce projet est une implémentation complète de l'algorithme RSA en C, utilisant la bibliothèque GMP (GNU Multiple Precision Arithmetic Library). Il comprend la génération des clés, le chiffrement, le déchiffrement, la signature numérique et la vérification.
+L’objectif de ce projet est d’implémenter les différentes fonctionnalités du RSA avec la contrainte de ne pas disposer de fonctions
+mathématiques évoluées, et de se limiter aux seules quatre opérations de base sur grands entiers.
+Cette limitation permet de se rapprocher d’un contexte de développement du RSA en environnement contraint comme par exemple la
+programmation d’un cryptoprocesseur pour carte à puce.
 
 # 📁 Structure du Projet
 
@@ -10,7 +13,6 @@ _rsa_project/_
 ├── **src/** _(Contient les fichiers source (.c))_  
 │   ├── **main.c** _(Point d’entrée du programme)_  
 │   ├── **rsa.c** _(Implémentation des fonctions liées à RSA)_  
-│   ├── **test.c** _(Tests des fonctionnalités)_  
 │   ├── **math_utils.c** _(Fonctions mathématiques : GCD, exponentiation modulaire)_  
 │   ├── **prime_utils.c** _(Fonctions de génération et de vérification des nombres premiers)_  
 ├── **include/** _(Headers pour abstraction matérielle)_  
