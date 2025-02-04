@@ -15,8 +15,7 @@ void rsa_mod(mpz_t r, mpz_t d, mpz_t n){
 	mpz_sub(r,d,temp);
 
 }
-// Calcul de puissance modulaire avec exposant non GMP : rop = (base ^ exp) % modulo
-void rsa_powm_ui(mpz_t rop, mpz_t base, unsigned long int exp, mpz_t modulo);
+
 // rop = base^(exp)
 void rsa_pow_ui(mpz_t rop, mpz_t base, unsigned long int exp){
 
