@@ -9,7 +9,6 @@ void rsa_mod(mpz_t r, mpz_t d, mpz_t n);
 // Calcul de puissance : rop = base ^ exp
 void rsa_pow_ui(mpz_t rop, mpz_t base, unsigned long int exp);
 
-
 // Calcul de puissance : rop = base ^ exp avec base non GMP
 void rsa_ui_pow_ui(mpz_t rop, unsigned long int base, unsigned long int exp);
 
