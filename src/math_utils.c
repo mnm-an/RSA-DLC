@@ -15,7 +15,8 @@ void rsa_mod(mpz_t r, mpz_t d, mpz_t n){
 	mpz_sub(r,d,temp);
 
 }
-
+// Calcul de puissance modulaire avec exposant non GMP : rop = (base ^ exp) % modulo
+void rsa_powm_ui(mpz_t rop, mpz_t base, unsigned long int exp, mpz_t modulo);
 // rop = base^(exp)
 void rsa_pow_ui(mpz_t rop, mpz_t base, unsigned long int exp){
 
@@ -34,6 +35,13 @@ void rsa_pow_ui(mpz_t rop, mpz_t base, unsigned long int exp){
     mpz_clear(temp_base);
 
 } 
+
+void rsa_ui_pow_ui(mpz_t rop, unsigned long int base, unsigned long int exp) {
+    mpz_t mpz_base;
+    mpz_init_set_ui(mpz_base, base); 
+    rsa_pow_ui(rop, mpz_base, exp);  
+    mpz_clear(mpz_base);            
+}
 
 // Exponentiation modulaire square and multiply always
 void rsa_powm(mpz_t rop, mpz_t base, mpz_t exp,mpz_t modulo){
@@ -61,6 +69,17 @@ void rsa_powm(mpz_t rop, mpz_t base, mpz_t exp,mpz_t modulo){
 	mpz_clear(a);
 
 }
+
+void rsa_powm_ui(mpz_t rop, mpz_t base, unsigned long int exp,mpz_t modulo){
+
+	mpz_t a,mpz_exp;
+	mpz_inits(a,mpz_exp,NULL);
+
+	mpz_set_ui(mpz_exp,exp);
+	rsa_powm(rop,base,mpz_exp,modulo);
+	mpz_clears(a,mpz_exp,NULL);
+
+} 
 
 void modular_inverse(mpz_t result, mpz_t a, mpz_t phi) {
     mpz_t r, r_prev, t, t_prev, q, temp, temp2;
