@@ -128,7 +128,6 @@ void modular_inverse(mpz_t result,mpz_t a,mpz_t phi){
 	extended_euclide(gcd, inv, k, a, phi);
 
 	if(mpz_cmp_ui(gcd,1)==0){
-		mpz_set(result,inv);
 		mpz_mod(result, inv, phi);
 
 	}else{
