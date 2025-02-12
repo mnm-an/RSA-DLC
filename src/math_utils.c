@@ -43,26 +43,32 @@ void rsa_ui_pow_ui(mpz_t rop, unsigned long int base, unsigned long int exp) {
 }
 
 // Exponentiation modulaire
-void rsa_powm(mpz_t rop, mpz_t base, mpz_t exp,mpz_t modulo){
+void rsa_powm(mpz_t rop, mpz_t base, mpz_t exp, mpz_t modulo) {
+    mpz_t a, b;
+    // Initialisation de a et b à 1
+    mpz_inits(a, b, NULL);
+    mpz_set_str(a, "1", 10);
+    mpz_set_str(b, "1", 10);
 
-	mpz_t a;
-	mpz_init(a);
+    int l = (int)mpz_sizeinbase(exp, 2); // Nombre de bits dans exp
 
-	int l = (int)mpz_sizeinbase(exp,2); // Calculer le nombre des bits de la base 
-	mpz_set_str(a,"1",10); // Initialiser a à 1
+    for (int i = l - 1; i >= 0; i--) {
+        // Élever a au carré et réduire modulo modulo
+        mpz_mul(a, a, a);
+        rsa_mod(a, a, modulo); // a = a^2 mod modulo
 
-	for(int i=l-1;i>=0;i--){
-		mpz_mul(a,a,a);
-		rsa_mod(a,a,modulo);
-
-		if(mpz_tstbit(exp,i)){
-			mpz_mul(a,a,base);
-			rsa_mod(a,a,modulo);
-		}
-	}
-	mpz_set(rop,a);
-	mpz_clear(a);
-
+        if (mpz_tstbit(exp, i)) {
+            // Si le bit est 1 : multiplication effective par base
+            mpz_mul(a, a, base);
+            rsa_mod(a, a, modulo); // a = (a * base) mod modulo
+        } else {
+            // Si le bit est 0 : multiplication fictive sur b
+            mpz_mul(b, a, base);
+            rsa_mod(b, b, modulo); // Opération dummy pour masquer la branche
+        }
+    }
+    mpz_set(rop, a);
+    mpz_clears(a, b, NULL);
 }
 
 void rsa_powm_ui(mpz_t rop, mpz_t base, unsigned long int exp,mpz_t modulo){
